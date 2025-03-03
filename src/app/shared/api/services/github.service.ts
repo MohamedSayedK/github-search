@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { GithubEndpoints } from "../constants";
 import { Observable } from "rxjs";
-import { GitHubSearchResponse } from "../models";
+import { GitHubSearchResponse, GitHubUser, Repository} from "../models";
 
 @Injectable({
     providedIn: 'root',
@@ -22,19 +22,18 @@ export class GithubService {
         });
     }
 
-    getUser(userName : string){
+    getUser(userName : string): Observable<GitHubUser>{
         const url = GithubEndpoints.USER_DETAILS.replace('{username}', userName);
-        return this.__httpClient.get(url)
+        return this.__httpClient.get<GitHubUser>(url)
     }
 
-    getUserRepos(userName : string, page: number = 1, perPage: number = 10, sort: string = 'created'){
+    getUserRepos(userName : string, page: number = 1, perPage: number = 6):Observable<Repository[]>{
         const url = GithubEndpoints.USER_REPOS.replace('{username}', userName);
-        return this.__httpClient.get(url), {
+        return this.__httpClient.get<Repository[]>(url , {
             params: {
                 page: page.toString(),
-                per_page: perPage.toString(),
-                sort
+                per_page: perPage.toString()
             }
-        }
+        })
     }
 }

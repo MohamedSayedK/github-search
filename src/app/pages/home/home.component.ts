@@ -6,11 +6,12 @@ import { finalize, Observable, Subject, switchMap, tap } from 'rxjs';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { GitHubSearchResponse } from '../../shared/api/models';
 import { FooterComponent } from '../../shared/components/footer/footer.component';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports:[FormsModule,LoaderComponent,AsyncPipe,CommonModule,FooterComponent],
+  imports:[FormsModule,LoaderComponent,AsyncPipe,CommonModule,FooterComponent,RouterLink],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })

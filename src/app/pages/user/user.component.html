@@ -1,3 +1,65 @@
-<p>
-  user works!
-</p>
+@if(user$ | async; as user){
+  <main class="grid px-8 py-5 ">
+    <div class=" col-12 md:col-4">
+      <div class="flex flex-column">
+      <img [src]="user.avatar_url" [alt]="user.name">
+      <div class="flex flex-column gap-2 mt-5">
+        <p class="username"> <a [href]="user.html_url" target="_blank" rel="noopener noreferrer">{{user.name}}</a></p>
+        <p class="mini">{{user.login}} #{{user.id}}</p>
+        <p class="mini">{{user.user_view_type}}</p>
+      </div>
+          <p class="bio my-5">{{user.bio}}</p>
+          <div class="flex align-items-center gap-2">
+            <p class="mini">Followers: {{user.followers}}</p>
+            <p class="mini">Following: {{user.following}}</p>
+          </div>
+          <div class="flex align-items-center gap-2 my-2">
+            <p class="mini">Company: {{user.company}}</p>
+            <p class="mini">Location: {{user.location}}</p>
+          </div>
+          <p class="mini mb-2">Created at: {{user.created_at}}</p>
+          <p class="mini">Updated at: {{user.updated_at}}</p>
+      </div>
+    </div>
+
+    @if(repos$ | async; as repos){
+      <div class="col-12 md:col-8">
+        <div class="flex flex-column gap-2">
+          <div class="flex align-items-center gap-2">
+            <h2>Repositories ({{totalPages}})</h2>
+            <a class="shadow-button" routerLink="/home">Home</a>
+          </div>
+          <div class="cards grid" (mousemove)="onMouseMove($event)">
+            @for(repo of repos; track repo.id){
+              <a [href]="repo.html_url" target="_blank" class="card col-12 md:col-6 lg:col-6" #cardElement>
+                <div class="card-content">
+                  <p>{{repo.name}}</p>
+                  <p class="mini">{{repo.description}}</p>
+                </div>
+              </a>
+            }
+          </div>
+
+          @if(totalPages > 1){
+            <div class="pagination flex justify-content-center gap-2 mt-4">
+              <button 
+                class="shadow-button" 
+                [disabled]="currentPage === 1"
+                (click)="onPageChange(currentPage - 1)">
+                Previous
+              </button>
+              <span class="page-info">Page {{currentPage}} of {{totalPages}}</span>
+              <button 
+                class="shadow-button"
+                [disabled]="currentPage === totalPages"
+                (click)="onPageChange(currentPage + 1)">
+                Next
+              </button>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </main>
+}
+<app-footer></app-footer>

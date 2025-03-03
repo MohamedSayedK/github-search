@@ -20,7 +20,7 @@
 }
 
 header {
-  height: 30vh;
+  height: 20vh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -33,6 +33,7 @@ main {
   flex: 1;
   display: flex;
   flex-direction: column;
+  padding-inline: 1em;
 
   .github-logo {
     margin: 0 auto;
@@ -71,12 +72,12 @@ main {
     padding-inline: 10px;
     background-image: conic-gradient(
       from var(--angle),
-      #ff7979,
+      #006aff,
       #e5dcff,
-      #ff7979
+      #006aff
     );
     border-radius: 8px;
-    // animation: 3s spin linear infinite;
+    animation: 3s spin linear infinite;
     margin-inline: -1px;
   }
 
@@ -167,7 +168,7 @@ main {
   align-items: center;
   justify-content: center;
   gap: 1em;
-  margin-block: 5em;
+  margin-block: 5em 4em;
 }
 
 .shadow-button {
@@ -182,7 +183,7 @@ main {
   cursor: pointer;
   position: relative;
   background: #171717;
-  border: 1px solid #3d444db3;
+  border: 1px solid #006aff;
   &:disabled {
     opacity: 0.5;
     pointer-events: none;
