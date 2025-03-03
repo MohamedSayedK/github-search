@@ -1,0 +1,16 @@
+footer{
+    border-top: 1px solid #3d444db3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-block: 0.5em;
+    font-family: "Numans", serif;
+    background-color: #171717;
+    color: white;
+    gap: 1em;
+
+    a{
+        color: white;
+        text-decoration: none;
+    }
+}

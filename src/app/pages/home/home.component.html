@@ -1,0 +1,42 @@
+<header>
+  <span class="wrapper">
+    <input type="text" name="" id="" [(ngModel)]="search" (keyup.enter)="onSearch()" placeholder="Search for a github account">
+  </span>
+</header>
+
+<main>
+  @if(loading){
+    <app-loader></app-loader>
+  }
+  @if(accounts$ | async; as accounts){
+    @if(!loading){
+      <div class="cards grid gap-3 justify-content-center" (mousemove)="onMouseMove($event)">
+        @for(account of accounts.items; track account.id){
+          <div class= "card col-12 md:col-6 lg:col-3" #cardElement>
+              <div class="card-content">
+                <img [src]="account.avatar_url" [alt]="account.login">
+                  <p>
+                    {{account.login}}
+                    <span>{{account.id}}</span>
+                  </p>
+              </div>
+          </div>
+        }
+      </div>
+
+      @if(totalPages > 1){
+        <div class="pagination">
+          <button class="shadow-button" [disabled]="currentPage === 1" (click)="onPageChange(currentPage - 1)">
+            Previous
+          </button>
+          <button class="shadow-button" [disabled]="currentPage === totalPages" (click)="onPageChange(currentPage + 1)">
+            Next
+          </button>
+        </div>
+      }
+    }
+  }@else{
+    <img class="github-logo" src="/assets/images/github-neon.svg" alt="">
+  }
+</main>
+<app-footer></app-footer>
