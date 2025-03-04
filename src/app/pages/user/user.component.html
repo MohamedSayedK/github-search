@@ -26,7 +26,7 @@
       <div class="col-12 md:col-8">
         <div class="flex flex-column gap-2">
           <div class="flex align-items-center gap-2">
-            <h2>Repositories ({{totalPages}})</h2>
+            <h2>Repositories ({{totalRepos}})</h2>
             <a class="shadow-button" routerLink="/home">Home</a>
           </div>
           <div class="cards grid" (mousemove)="onMouseMove($event)">
@@ -39,26 +39,10 @@
               </a>
             }
           </div>
-
-          @if(totalPages > 1){
-            <div class="pagination flex justify-content-center gap-2 mt-4">
-              <button 
-                class="shadow-button" 
-                [disabled]="currentPage === 1"
-                (click)="onPageChange(currentPage - 1)">
-                Previous
-              </button>
-              <span class="page-info">Page {{currentPage}} of {{totalPages}}</span>
-              <button 
-                class="shadow-button"
-                [disabled]="currentPage === totalPages"
-                (click)="onPageChange(currentPage + 1)">
-                Next
-              </button>
-            </div>
-          }
         </div>
       </div>
+    }@else{
+      <app-loader></app-loader>
     }
   </main>
 }

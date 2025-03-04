@@ -43,6 +43,26 @@ main{
     margin-block: 5em 4em;
   }
 
+  .cards{
+    height: 70vh;
+    overflow-y: auto;
+    border-bottom: 1px solid #006aff;
+    padding-right: 1em;
+
+    &::-webkit-scrollbar {
+      width: 0.5em;
+    }
+     
+    &::-webkit-scrollbar-track {
+      box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    }
+     
+    &::-webkit-scrollbar-thumb {
+      background-color: #006aff;
+      border-radius: 1em;
+    }
+  }
+
   .cards:hover > .card::after {
     opacity: 1;
   }

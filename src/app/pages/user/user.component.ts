@@ -2,14 +2,15 @@ import { Component, DestroyRef, ElementRef, NgZone, OnInit, QueryList, ViewChild
 import { GithubService } from '../../shared/api/services/github.service';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { GitHubUser, Repository } from '../../shared/api/models';
 import { AsyncPipe } from '@angular/common';
 import { FooterComponent } from '../../shared/components/footer/footer.component';
+import { LoaderComponent } from '../../shared/components/loader/loader.component';
 @Component({
   selector: 'app-user',
   standalone: true,
-  imports: [AsyncPipe,FooterComponent,RouterLink],
+  imports: [AsyncPipe,FooterComponent,RouterLink,LoaderComponent],
   templateUrl: './user.component.html',
   styleUrls: ['./user.component.scss']
 })
@@ -17,9 +18,8 @@ export class UserComponent implements OnInit {
 
   user$!: Observable<GitHubUser>;
   repos$!: Observable<Repository[]>;
-  currentPage: number = 1;
-  perPage: number = 6;
-  totalPages: number = 0;
+  totalRepos: number = 0;
+  loading: boolean = false;
 
   @ViewChildren('cardElement') cardElements!: QueryList<ElementRef>;
 
@@ -35,6 +35,9 @@ export class UserComponent implements OnInit {
 
     if(username){
       this.user$ = this.githubService.getUser(username).pipe(
+        tap(user => {
+          this.totalRepos = user.public_repos;
+        }),
         takeUntilDestroyed(this.destroyRef)
       );
 
@@ -43,18 +46,11 @@ export class UserComponent implements OnInit {
   }
 
   loadRepos(username: string){
-    this.repos$ = this.githubService.getUserRepos(username, this.currentPage, this.perPage).pipe(
+    this.repos$ = this.githubService.getUserRepos(username).pipe(
       takeUntilDestroyed(this.destroyRef)
     );
   }
 
-  onPageChange(page: number){
-    this.currentPage = page;
-    const username = this.activeRoute.snapshot.paramMap.get('username');
-    if(username){
-      this.loadRepos(username);
-    }
-  }
 
   onMouseMove(event: MouseEvent) {
     this.ngZone.runOutsideAngular(() => {

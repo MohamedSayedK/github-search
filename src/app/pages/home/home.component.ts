@@ -1,26 +1,25 @@
 import { Component, ElementRef, NgZone, QueryList, ViewChildren } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { GithubService} from '../../shared/api/services/github.service'
 import { LoaderComponent } from '../../shared/components/loader/loader.component';
-import { finalize, Observable, Subject, switchMap, tap } from 'rxjs';
+import { debounceTime, finalize, Observable, switchMap, tap } from 'rxjs';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { GitHubSearchResponse } from '../../shared/api/models';
 import { FooterComponent } from '../../shared/components/footer/footer.component';
 import { RouterLink } from '@angular/router';
+import { QueryParams } from '../../shared/api/models/query';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports:[FormsModule,LoaderComponent,AsyncPipe,CommonModule,FooterComponent,RouterLink],
+  imports:[FormsModule,LoaderComponent,AsyncPipe,CommonModule,FooterComponent,RouterLink,ReactiveFormsModule],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent{
   loading: boolean = false;
-  search: string = '';
+  search = new FormControl('');
   accounts$! : Observable<GitHubSearchResponse>;
-  private searchSubject = new Subject<string>();
-
   currentPage: number = 1;
   itemsPerPage: number = 15;
   totalPages: number = 0;
@@ -29,10 +28,18 @@ export class HomeComponent{
 
 
   constructor(private gitHubService: GithubService, private ngZone: NgZone) {
-    this.accounts$ = this.searchSubject.pipe(
+    this.accounts$ = this.search.valueChanges.pipe(
+      debounceTime(1000),
       switchMap(query => {
+        if(!query) return [];
         this.loading = true;
-        return this.gitHubService.getAccounts(query, this.currentPage, this.itemsPerPage).pipe(
+
+        const queryParams: QueryParams = {
+          query: query,
+          page: this.currentPage,
+          perPage: this.itemsPerPage
+        };
+        return this.gitHubService.getAccounts(queryParams).pipe(
           tap(response => {
             this.totalPages = Math.ceil(response.total_count/ this.itemsPerPage)
           }),
@@ -44,12 +51,18 @@ export class HomeComponent{
 
   onSearch() {
     this.currentPage = 1;
-    this.searchSubject.next(this.search);
+    const searchValue = this.search.value;
+    if (searchValue) {
+      this.search.setValue(searchValue,{emitEvent: true})
+    }
   }
 
   onPageChange(page : number){
     this.currentPage = page;
-    this.searchSubject.next(this.search);
+    const searchValue = this.search.value;
+    if (searchValue) {
+      this.search.setValue(searchValue,{emitEvent: true})
+    }
   }
 
   onMouseMove(event: MouseEvent) {

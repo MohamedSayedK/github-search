@@ -3,6 +3,7 @@ import { Injectable } from "@angular/core";
 import { GithubEndpoints } from "../constants";
 import { Observable } from "rxjs";
 import { GitHubSearchResponse, GitHubUser, Repository} from "../models";
+import { QueryParams } from "../models/query";
 
 @Injectable({
     providedIn: 'root',
@@ -11,13 +12,13 @@ import { GitHubSearchResponse, GitHubUser, Repository} from "../models";
 export class GithubService {
     constructor(private __httpClient: HttpClient){}
 
-    getAccounts(query: string, page: number = 1, perPage: number = 15): Observable<GitHubSearchResponse>{
-        const url = GithubEndpoints.SEARCH_USERS.replace('{query}', query);
+    getAccounts(queryParams: QueryParams): Observable<GitHubSearchResponse>{
+        const url = GithubEndpoints.SEARCH_USERS.replace('{query}', queryParams.query || '');
         return this.__httpClient.get<GitHubSearchResponse>(url, {
             params: {
-                q: query,
-                page: page.toString(),
-                per_page: perPage.toString()
+                q: queryParams.query || '',
+                page: queryParams.page?.toString() || '1',
+                per_page: queryParams.perPage?.toString() || '15'
             }
         });
     }
@@ -27,13 +28,8 @@ export class GithubService {
         return this.__httpClient.get<GitHubUser>(url)
     }
 
-    getUserRepos(userName : string, page: number = 1, perPage: number = 6):Observable<Repository[]>{
+    getUserRepos(userName: string):Observable<Repository[]>{
         const url = GithubEndpoints.USER_REPOS.replace('{username}', userName);
-        return this.__httpClient.get<Repository[]>(url , {
-            params: {
-                page: page.toString(),
-                per_page: perPage.toString()
-            }
-        })
+        return this.__httpClient.get<Repository[]>(url)
     }
 }
