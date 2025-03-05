@@ -22,7 +22,7 @@
       </div>
     </div>
 
-    @if(repos$ | async; as repos){
+     @if(repos$ | async; as repos){ 
       <div class="col-12 md:col-8">
         <div class="flex flex-column gap-2">
           <div class="flex align-items-center gap-2">
@@ -42,7 +42,9 @@
         </div>
       </div>
     }@else{
-      <app-loader></app-loader>
+      <div class="col-12 md:col-8 flex justify-content-center align-items-center">
+        <app-loader></app-loader>
+      </div>
     }
   </main>
 }
